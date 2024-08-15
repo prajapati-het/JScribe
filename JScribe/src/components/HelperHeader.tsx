@@ -8,7 +8,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useDispatch, useSelector } from "react-redux";
-import { updateCurrentLanguage } from "@/redux/slices/compilerSlice";
+import { CompilerSliceStateType, updateCurrentLanguage } from "@/redux/slices/compilerSlice";
 import { RootState } from "@/redux/store";
 
 export default function HelperHeader() {
@@ -39,7 +39,7 @@ export default function HelperHeader() {
       <div className="__tab_switcher flex justify-center items-center gap-1 ">
         <small>Current Language: </small>
         <Select defaultValue={currentLanguage}
-         onValueChange={(value)=>dispatch(updateCurrentLanguage(value))} >
+         onValueChange={(value)=>dispatch(updateCurrentLanguage(value as CompilerSliceStateType["currentLanguage"]))} >
           <SelectTrigger className="w-[120px] bg-gray-800 outline-none focus:ring-0 ">
             <SelectValue />
           </SelectTrigger>
