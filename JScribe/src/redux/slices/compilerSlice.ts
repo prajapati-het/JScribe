@@ -1,18 +1,18 @@
+import { CompilerSliceStateType } from "@/redux/slices/compilerSlice";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface CompilerSliceStateType {
-    fullCode: {
-        html: string,
-        css: string,
-        javascript: string,
-    }
-    currentLanguage: "html" | "css" | "javascript";
+  fullCode: {
+    html: string;
+    css: string;
+    javascript: string;
+  };
+  currentLanguage: "html" | "css" | "javascript";
 }
 
 const initialState: CompilerSliceStateType = {
-    fullCode: {
-        html: 
-        `
+  fullCode: {
+    html: `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -33,8 +33,7 @@ const initialState: CompilerSliceStateType = {
 </html>
 
         `,
-        css: 
-        `
+    css: `
 body {
     font-family: Arial, sans-serif;
     background-color: #f7f7f7;
@@ -89,8 +88,7 @@ li {
     background: #
 
         `,
-        javascript: 
-        `
+    javascript: `
 document.getElementById('addTaskButton').addEventListener('click', addTask);
 
 function addTask() {
@@ -124,23 +122,32 @@ function addTask() {
     taskInput.value = '';
 }
 
-        `
-    },
-    currentLanguage: "html",
+        `,
+  },
+  currentLanguage: "html",
 };
 
 const compilerSlice = createSlice({
-    name: "compilerSlice",
-    initialState,
-    reducers: {
-        updateCurrentLanguage: (state, action: PayloadAction<CompilerSliceStateType["currentLanguage"]>) => {
-            state.currentLanguage = action.payload;
-        },
-        updateCodeValue: (state, action: PayloadAction<string>) => {
-           state.fullCode[state.currentLanguage] = action.payload;
-        },
-    }
-})
+  name: "compilerSlice",
+  initialState,
+  reducers: {
+    updateCurrentLanguage: (
+      state,
+      action: PayloadAction<CompilerSliceStateType["currentLanguage"]>
+    ) => {
+      state.currentLanguage = action.payload;
+    },
+    updateCodeValue: (state, action: PayloadAction<string>) => {
+      state.fullCode[state.currentLanguage] = action.payload;
+    },
+    updateFullCode: (
+      state, action: PayloadAction<CompilerSliceStateType["fullCode"]>
+    ) => {
+      state.fullCode = action.payload;
+    },
+  },
+});
 
 export default compilerSlice.reducer;
-export const { updateCurrentLanguage, updateCodeValue } = compilerSlice.actions
+export const { updateCurrentLanguage, updateCodeValue, updateFullCode } =
+  compilerSlice.actions;
