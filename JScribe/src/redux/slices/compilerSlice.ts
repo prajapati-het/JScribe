@@ -149,5 +149,4 @@ const compilerSlice = createSlice({
 });
 
 export default compilerSlice.reducer;
-export const { updateCurrentLanguage, updateCodeValue, updateFullCode } =
-  compilerSlice.actions;
+export const { updateCurrentLanguage, updateCodeValue, updateFullCode } = compilerSlice.actions;

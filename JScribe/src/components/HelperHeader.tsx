@@ -29,14 +29,16 @@ import {
 import { toast } from "sonner";
 
 export default function HelperHeader() {
+
   const [saveLoading, setSaveLoading] = useState<boolean>(false);
   const [shareBtn, setShareBtn] = useState<boolean>(false);
   const navigate = useNavigate();
   const fullCode = useSelector(
     (state: RootState) => state.compilerSlice.fullCode
   );
-
+ 
   const { urlId } = useParams();
+  
   useEffect(() => {
     if (urlId) {
       setShareBtn(true);

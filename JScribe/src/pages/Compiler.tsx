@@ -40,6 +40,7 @@ export default function Compile() {
       loadCode();
     }
   }, [urlId]);
+  
   return (
     <div>
       <ResizablePanelGroup direction="horizontal">
