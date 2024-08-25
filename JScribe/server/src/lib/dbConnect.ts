@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 export const dbConnect = async () => {
     try{
         await mongoose.connect(process.env.MONGO_URI!,{
-            dbName : "wd-compiler",
+            dbName : "JScribe",
         });
         console.log("connection established");
     } catch(error){

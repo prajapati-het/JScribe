@@ -18,6 +18,7 @@ export const loadCode = async (req:Request, res:Response) => {
   const {urlId} = req.body;
   try{
     const existingCode = await Code.findById(urlId);
+    console.log(existingCode?.fullCode);
     if(!existingCode){
       return res.status(404).send({message: "Code not found"});
     }

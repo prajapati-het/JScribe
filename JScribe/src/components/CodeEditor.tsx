@@ -20,7 +20,7 @@ export default function CodeEditor() {
 
   const onChange = React.useCallback((value: string) => {
     dispatch(updateCodeValue(value))
-  }, []);
+  }, [dispatch]);
 
   return (
     <CodeMirror

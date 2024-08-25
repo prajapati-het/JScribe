@@ -9,7 +9,7 @@ import {
 import { updateFullCode } from "@/redux/slices/compilerSlice";
 import { handleError } from "@/utils/handleError";
 import axios from "axios";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import { toast } from "sonner";
@@ -18,7 +18,7 @@ export default function Compile() {
   const { urlId } = useParams();
   const dispatch = useDispatch();
 
-  const loadCode = async () => {
+  const loadCode = useCallback(async () => {
     try {
       const response = await axios.post("http://localhost:4000/compiler/load", {
         urlId: urlId,
@@ -33,13 +33,14 @@ export default function Compile() {
       }
       handleError(error);
     }
-  };
-
+  }, [dispatch, urlId]);
+  
   useEffect(() => {
     if (urlId) {
       loadCode();
     }
-  }, [urlId]);
+  }, [urlId, loadCode]);
+  
   return (
     <div>
       <ResizablePanelGroup direction="horizontal">

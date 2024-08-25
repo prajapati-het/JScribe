@@ -51,14 +51,16 @@ export default function HelperHeader() {
       const response = await axios.post("http://localhost:4000/complier/save", {
         fullCode: fullCode,
       });
-      console.log(response.data);
-      navigate(`/complier/${response.data.url}`, { replace: true });
+      navigate(`/compiler/${response.data.url}`, { replace: true });
+ 
     } catch (error) {
       handleError(error);
     } finally {
       setSaveLoading(false);
     }
   };
+
+  
   const dispatch = useDispatch();
   const currentLanguage = useSelector(
     (state: RootState) => state.compilerSlice.currentLanguage
