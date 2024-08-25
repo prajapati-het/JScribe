@@ -39,17 +39,13 @@ export default function Compile() {
     if (urlId) {
       loadCode();
     }
-<<<<<<< HEAD
   }, [urlId, loadCode]);
-=======
-  }, [urlId]);
->>>>>>> a37b3443eb4bb42ed65d67862bcafa843def4195
   
   return (
-    <div>
-      <ResizablePanelGroup direction="horizontal">
+    <div className="w-full h-[calc(100dvh-60px)]">
+      <ResizablePanelGroup direction="horizontal" className="h-full">
         <ResizablePanel
-          className="h-[calc(100dvh-60px)] min-w-[350px] "
+          className="h-full min-w-[350px]"
           defaultSize={50}
         >
           <HelperHeader />
@@ -57,7 +53,7 @@ export default function Compile() {
         </ResizablePanel>
         <ResizableHandle />
         <ResizablePanel
-          className="h-[calc(100dvh-60px)] min-w-[350px]  "
+          className="h-full min-w-[350px]"
           defaultSize={50}
         >
           <RenderCode />

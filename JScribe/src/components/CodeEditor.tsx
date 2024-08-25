@@ -17,11 +17,7 @@ export default function CodeEditor() {
   const dispatch = useDispatch();
 
   const onChange = React.useCallback((value: string) => {
-<<<<<<< HEAD
     dispatch(updateCodeValue(value))
-=======
-    dispatch(updateCodeValue(value));
->>>>>>> a37b3443eb4bb42ed65d67862bcafa843def4195
   }, [dispatch]);
 
   return (
