@@ -39,7 +39,11 @@ export default function Compile() {
     if (urlId) {
       loadCode();
     }
+<<<<<<< HEAD
   }, [urlId, loadCode]);
+=======
+  }, [urlId]);
+>>>>>>> a37b3443eb4bb42ed65d67862bcafa843def4195
   
   return (
     <div>
