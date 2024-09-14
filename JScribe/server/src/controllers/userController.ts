@@ -66,7 +66,7 @@ export const login = async (req: Request, res: Response) => {
       sameSite: "lax",
     });
 
-    return res.status(200).send({ user: existingUser });
+    return res.status(200).send({ username: existingUser.username, picture: existingUser.picture, email: existingUser.email, savedCodes: existingUser.savedCodes });
   } catch (error) {
     return res.status(500).send({ message: "Error logging in!", error });
   }

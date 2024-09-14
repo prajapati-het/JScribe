@@ -68,17 +68,17 @@ export default function HelperHeader() {
         <Button
           onClick={handleSaveCode}
           className="flex justify-center items-center gap-1"
-          variant="sucess"
+          variant="success"
           disabled={isLoading}
         >
           {isLoading ? (
             <>
-              <Loader2 className="animate-spin" /> Saving
+              <Loader2 className="animate-spin" />
             </>
           ) : (
             <>
               {" "}
-              <Save size={16} /> Save
+              <Save size={16} />
             </>
           )}
         </Button>

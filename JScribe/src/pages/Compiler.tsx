@@ -28,7 +28,7 @@ export default function Compile() {
     } catch (error) {
       handleError(error);
     }
-  }, [dispatch, urlId]);
+  }, [dispatch, loadExistingCode, urlId]);
 
   useEffect(() => {
     if (urlId) {

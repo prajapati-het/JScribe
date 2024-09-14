@@ -12,7 +12,11 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useLoginMutation } from "@/redux/slices/api";
+import { handleError } from "@/utils/handleError";
+import { useDispatch } from "react-redux";
+import { updateCurrentUser, updateIsLoggedIn } from "@/redux/slices/appslice";
 
 const formSchema = z.object({
   userId: z.string(),
@@ -20,6 +24,11 @@ const formSchema = z.object({
 });
 
 export default function Login() {
+
+  const [login, {isLoading}] = useLoginMutation();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -28,10 +37,17 @@ export default function Login() {
     },
   });
 
-  function handleLogin(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
+  async function handleLogin(values: z.infer<typeof formSchema>) {
+    try{
+      console.log(values);
+      const response = await login(values).unwrap();
+      dispatch(updateCurrentUser(response));
+      dispatch(updateIsLoggedIn(true));
+      navigate("/");
+  }
+  catch(error){
+      handleError(error)
+  }
   }
 
   return (
@@ -49,7 +65,7 @@ export default function Login() {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input placeholder="Username or Email" {...field} />
+                    <Input required disabled={isLoading} placeholder="Username or Email" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -62,14 +78,14 @@ export default function Login() {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input type="password" placeholder="Password" {...field} />
+                    <Input required disabled={isLoading} type="password" placeholder="Password" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
-            <Button className="w-full" type="submit">
+            <Button loading={isLoading}  className="w-full" type="submit">
               Login
             </Button>
           </form>
