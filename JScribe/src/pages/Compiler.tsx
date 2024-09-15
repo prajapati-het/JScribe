@@ -11,7 +11,7 @@ import { useLoadCodeMutation } from "@/redux/slices/api";
 import { updateFullCode } from "@/redux/slices/compilerSlice";
 import { handleError } from "@/utils/handleError";
 
-import { useCallback, useEffect } from "react";
+import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 
@@ -19,22 +19,23 @@ export default function Compile() {
   const { urlId } = useParams();
   const [loadExistingCode, { isLoading }] = useLoadCodeMutation();
   const dispatch = useDispatch();
-  const loadCode = useCallback(async () => {
-    try {
-      if (urlId) {
-        const response = await loadExistingCode({ urlId }).unwrap();
-        dispatch(updateFullCode(response.fullCode));
-      }
-    } catch (error) {
-      handleError(error);
-    }
-  }, [dispatch, loadExistingCode, urlId]);
 
   useEffect(() => {
+    const loadCode = async () => {
+      try {
+        if (urlId) {
+          const response = await loadExistingCode({ urlId }).unwrap();
+          dispatch(updateFullCode(response.fullCode));
+        }
+      } catch (error) {
+        handleError(error);
+      }
+    };
+
     if (urlId) {
       loadCode();
     }
-  }, [urlId, loadCode]);
+  }, [dispatch, loadExistingCode, urlId]);
 
   if (isLoading)
     return (

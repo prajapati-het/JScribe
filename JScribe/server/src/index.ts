@@ -11,7 +11,7 @@ app.use(express.json());
 app.use(cors({credentials: true, origin:"http://localhost:5173"}));
 config();
 
-app.use("/complier", compilerRouter);
+app.use("/compiler", compilerRouter);
 app.use("/user", UserAuthRouter);
 
 dbConnect();

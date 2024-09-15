@@ -11,20 +11,17 @@ export const api = createApi({
       { url: string; status: string },
       CompilerSliceStateType["fullCode"]
     >({
-      query: (fullCode) => ({
+      query: (fullCode) => {console.log(fullCode);return {
         url: "/compiler/save",
         method: "POST",
         body: fullCode,
-      }),
+      }},
     }),
-    loadCode: builder.mutation<
-      { fullCode: CompilerSliceStateType["fullCode"] },
-      { urlId: string }
-    >({
-      query: (body) => ({
-        url: "/compiler/load",
+    loadCode: builder.mutation({
+      query: ({ urlId }) => ({
+        url: `/compiler/load`,
         method: "POST",
-        body: body,
+        body: { urlId },
       }),
     }),
     login: builder.mutation<userInfoType, loginCredentialsType>({
