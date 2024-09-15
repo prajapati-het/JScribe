@@ -11,7 +11,11 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useSignupMutation } from "@/redux/slices/api";
+import { handleError } from "@/utils/handleError";
+import { updateCurrentUser, updateIsLoggedIn } from "@/redux/slices/appslice";
+import { useDispatch } from "react-redux";
 
 const formSchema = z.object({
   username: z.string(),
@@ -20,6 +24,11 @@ const formSchema = z.object({
 });
 
 export default function Signup() {
+
+  const [signup, {isLoading}] = useSignupMutation();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -29,10 +38,15 @@ export default function Signup() {
     },
   });
 
-  function handleSignup(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
+  async function handleSignup(values: z.infer<typeof formSchema>) {
+    try {
+      const response = await signup(values).unwrap();
+      dispatch(updateCurrentUser(response));
+      dispatch(updateIsLoggedIn(true));
+      navigate("/");
+    } catch (error) {
+      handleError(error);
+    }
   }
 
   return (
@@ -52,7 +66,7 @@ export default function Signup() {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input placeholder="Username" {...field} />
+                    <Input disabled={isLoading} placeholder="Username" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -65,7 +79,7 @@ export default function Signup() {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input type="email" placeholder="Email" {...field} />
+                    <Input disabled={isLoading} type="email" placeholder="Email" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -78,14 +92,14 @@ export default function Signup() {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input type="password" placeholder="Password" {...field} />
+                    <Input disabled={isLoading} type="password" placeholder="Password" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
-            <Button className="w-full" type="submit">
+            <Button className="w-full" type="submit" loading={isLoading} >
               Signup
             </Button>
           </form>

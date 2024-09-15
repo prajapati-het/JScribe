@@ -12,3 +12,15 @@ interface loginCredentialsType {
     userId: string;
     password: string 
 }
+
+interface signupCredentialsType {
+    username: string
+    email:string
+    password: string
+}
+
+interface codeType {
+    fullCode?: CompilerSliceStateType["fullCode"];
+    title: string;
+    _id?: string;
+  }
