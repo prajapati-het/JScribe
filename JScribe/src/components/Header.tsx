@@ -55,7 +55,7 @@ export default function Header() {
   return (
     <nav className="w-full h-[60px] bg-gray-900 text-white p-3 flex justify-between items-center">
       <Link to="/">
-        <h2 className="font-bold select-none">WD Compiler</h2>
+        <h2 className="font-bold select-none">JScribe Compiler</h2>
       </Link>
       {windowWidth > 500 ? (
         <ul className="flex gap-2">

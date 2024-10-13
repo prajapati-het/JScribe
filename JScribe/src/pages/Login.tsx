@@ -16,7 +16,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useLoginMutation } from "@/redux/slices/api";
 import { handleError } from "@/utils/handleError";
 import { useDispatch } from "react-redux";
-import { updateCurrentUser, updateIsLoggedIn } from "@/redux/slices/appslice";
+import { updateCurrentUser, updateIsLoggedIn } from "@/redux/slices/appSlice";
 
 const formSchema = z.object({
   userId: z.string(),

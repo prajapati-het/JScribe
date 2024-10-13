@@ -6,6 +6,7 @@ export interface CompilerSliceStateType {
     html: string;
     css: string;
     javascript: string;
+    
   };
   currentLanguage: "html" | "css" | "javascript";
   isOwner: boolean;

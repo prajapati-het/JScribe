@@ -3,6 +3,9 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { User } from "../models/User";
 import { AuthRequest } from "../middlewares/verifyToken";
+import { OAuth2Client } from "google-auth-library";
+
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 export const signup = async (req: Request, res: Response) => {
   const { username, email, password } = req.body;
@@ -130,6 +133,57 @@ export const userDetails = async (req: AuthRequest, res: Response) => {
       savedCodes: user.savedCodes,
     });
   } catch (error) {
+    console.log(error);
     return res.status(500).send({ message: "Cannot fetch user details" });
+  }
+};
+
+
+export const googleSignIn = async (req: AuthRequest, res: Response) => {
+  const { idToken } = req.body;
+  try {
+    const ticket = await client.verifyIdToken({
+      idToken,
+      audience: process.env.GOOGLE_CLIENT_ID, // Specify the CLIENT_ID of the app that accesses the backend
+    });
+
+    const payload = ticket.getPayload();
+    const email = payload?.email;
+
+    let user = await User.findOne({ email }); // Check if the user already exists
+    if (!user) {
+      // If user does not exist, create a new one
+      user = await User.create({
+        email,
+        username: email!.split('@')[0], // Create a username from the email
+      });
+    }
+
+    const jwtToken = jwt.sign(
+      {
+        _id: user._id,
+        email: user.email,
+      },
+      process.env.JWT_KEY!,
+      {
+        expiresIn: "1d",
+      }
+    );
+
+    res.cookie("token", jwtToken, {
+      path: "/",
+      expires: new Date(Date.now() + 1000 * 60 * 60 * 24),
+      httpOnly: true,
+      sameSite: "lax",
+    });
+
+    return res.status(200).send({
+      username: user.username,
+      picture: user.picture,
+      email: user.email,
+      savedCodes: user.savedCodes,
+    });
+  } catch (error) {
+    return res.status(400).send({ message: "Invalid ID token", error });
   }
 };

@@ -85,6 +85,13 @@ export const api = createApi({
       }),
       providesTags: ["allCodes"],
     }),
+    googleSignIn: builder.mutation<userInfoType, { idToken: string }>({
+      query: ({ idToken }) => ({
+        url: "/user/google-signin",
+        method: "POST",
+        body: { idToken },
+      }),
+    }),
   }),
 });
 
@@ -99,4 +106,5 @@ export const {
   useDeleteCodeMutation,
   useEditCodeMutation,
   useGetAllCodesQuery,
+  useGoogleSignInMutation
 } = api;

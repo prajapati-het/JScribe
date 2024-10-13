@@ -12,10 +12,15 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Link, useNavigate } from "react-router-dom";
-import { useSignupMutation } from "@/redux/slices/api";
+import { useGoogleSignInMutation, useSignupMutation } from "@/redux/slices/api";
 import { handleError } from "@/utils/handleError";
-import { updateCurrentUser, updateIsLoggedIn } from "@/redux/slices/appslice";
+import { updateCurrentUser, updateIsLoggedIn } from "@/redux/slices/applice";
 import { useDispatch } from "react-redux";
+
+import {  GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { auth } from '@/utils/firebase';
+
+import { FcGoogle } from "react-icons/fc";
 
 const formSchema = z.object({
   username: z.string(),
@@ -26,6 +31,7 @@ const formSchema = z.object({
 export default function Signup() {
 
   const [signup, {isLoading}] = useSignupMutation();
+  const [googleSignIn] = useGoogleSignInMutation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -48,6 +54,57 @@ export default function Signup() {
       handleError(error);
     }
   }
+
+
+  /*const handleSignIn = async () => {
+    console.log("In handle signin");
+
+    const provider = new GoogleAuthProvider();
+
+    try {
+      const result = await signInWithPopup(auth, provider);
+      console.log(result.user); 
+      const idToken = await result.user.getIdToken();
+      await sendIdTokenToServer(idToken);
+    } catch (error) {
+      console.error('Error during Google Sign-In:', error);
+    }
+  };
+
+  const sendIdTokenToServer = async (idToken:string) => {
+    try {
+      const response = await fetch('/api/auth/verify-token', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ idToken }),
+      });
+      const data = await response.json();
+      console.log('Server response:', data);
+    } catch (error) {
+      console.error('Error sending ID token to server:', error);
+    }
+  };*/
+
+  const handleSignIn = async () => {
+    const provider = new GoogleAuthProvider();
+
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const idToken = await result.user.getIdToken();
+
+      // Use the googleSignIn mutation
+      const response = await googleSignIn({ idToken }).unwrap();
+      dispatch(updateCurrentUser(response));
+      dispatch(updateIsLoggedIn(true));
+      navigate("/");
+    } catch (error) {
+      console.error("Error during Google Sign-In:", error);
+      handleError(error);
+    }
+  };
+
 
   return (
     <div className="__signup grid-bg w-full h-[calc(100dvh-60px)] flex justify-center items-center flex-col ">
@@ -104,6 +161,21 @@ export default function Signup() {
             </Button>
           </form>
         </Form>
+
+        <div className="flex items-center my-4">
+          <div className="flex-grow border-t border-gray-400"></div>
+          <span className="mx-2 text-gray-500">OR</span>
+          <div className="flex-grow border-t border-gray-400"></div>
+        </div>
+
+        <Button
+          className="w-full flex items-center justify-center gap-2"
+          onClick={handleSignIn}
+        >
+          <FcGoogle size={20} />
+          Sign in with Google
+        </Button>
+
         <small className="text-xs font-mono">
           Already have an account?{" "}
           <Link className="text-blue-500" to="/login">
