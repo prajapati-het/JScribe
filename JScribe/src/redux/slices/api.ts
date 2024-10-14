@@ -86,10 +86,11 @@ export const api = createApi({
       providesTags: ["allCodes"],
     }),
     googleSignIn: builder.mutation<userInfoType, { idToken: string }>({
-      query: ({ idToken }) => ({
-        url: "/user/google-signin",
+      query: (body) => ({
+        url: "/user/googleSignin",
         method: "POST",
-        body: { idToken },
+        body: body,
+
       }),
     }),
   }),

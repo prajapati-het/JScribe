@@ -5,7 +5,7 @@ import { User } from "../models/User";
 import { AuthRequest } from "../middlewares/verifyToken";
 import { OAuth2Client } from "google-auth-library";
 
-const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+const client = new OAuth2Client(process.env.CLIENT_ID);
 
 export const signup = async (req: Request, res: Response) => {
   const { username, email, password } = req.body;
@@ -139,26 +139,32 @@ export const userDetails = async (req: AuthRequest, res: Response) => {
 };
 
 
-export const googleSignIn = async (req: AuthRequest, res: Response) => {
+export const googleSignIn = async (req: Request, res: Response) => {
+  console.log("I am in Google Signin")
   const { idToken } = req.body;
   try {
+    // Verify the ID token with Google's OAuth2Client
     const ticket = await client.verifyIdToken({
       idToken,
-      audience: process.env.GOOGLE_CLIENT_ID, // Specify the CLIENT_ID of the app that accesses the backend
+      audience: process.env.CLIENT_ID,
     });
 
     const payload = ticket.getPayload();
     const email = payload?.email;
 
-    let user = await User.findOne({ email }); // Check if the user already exists
+    // Check if the user already exists in the database
+    let user = await User.findOne({ email });
     if (!user) {
-      // If user does not exist, create a new one
+      // If the user does not exist, create a new entry in the database
       user = await User.create({
         email,
-        username: email!.split('@')[0], // Create a username from the email
+        username: email!.split('@')[0], // Create a username from the email's local part
+        picture: payload?.picture || "", // Optionally set the picture from the payload
+        savedCodes: [], // Initialize savedCodes as an empty array
       });
     }
 
+    // Generate a JWT token for the user
     const jwtToken = jwt.sign(
       {
         _id: user._id,
@@ -170,13 +176,15 @@ export const googleSignIn = async (req: AuthRequest, res: Response) => {
       }
     );
 
+    // Set the JWT token as a cookie
     res.cookie("token", jwtToken, {
       path: "/",
-      expires: new Date(Date.now() + 1000 * 60 * 60 * 24),
+      expires: new Date(Date.now() + 1000 * 60 * 60 * 24), // 1 day expiration
       httpOnly: true,
       sameSite: "lax",
     });
 
+    // Send the user details in the response
     return res.status(200).send({
       username: user.username,
       picture: user.picture,
@@ -184,6 +192,7 @@ export const googleSignIn = async (req: AuthRequest, res: Response) => {
       savedCodes: user.savedCodes,
     });
   } catch (error) {
+    // Handle any errors during the Google Sign-In process
     return res.status(400).send({ message: "Invalid ID token", error });
   }
 };

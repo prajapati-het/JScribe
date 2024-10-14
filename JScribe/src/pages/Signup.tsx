@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Link, useNavigate } from "react-router-dom";
 import { useGoogleSignInMutation, useSignupMutation } from "@/redux/slices/api";
 import { handleError } from "@/utils/handleError";
-import { updateCurrentUser, updateIsLoggedIn } from "@/redux/slices/applice";
+import { updateCurrentUser, updateIsLoggedIn } from "@/redux/slices/appSlice";
 import { useDispatch } from "react-redux";
 
 import {  GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
@@ -31,7 +31,7 @@ const formSchema = z.object({
 export default function Signup() {
 
   const [signup, {isLoading}] = useSignupMutation();
-  const [googleSignIn] = useGoogleSignInMutation();
+  //const [googleSignIn] = useGoogleSignInMutation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -56,7 +56,7 @@ export default function Signup() {
   }
 
 
-  /*const handleSignIn = async () => {
+  const handleSignIn = async () => {
     console.log("In handle signin");
 
     const provider = new GoogleAuthProvider();
@@ -85,9 +85,9 @@ export default function Signup() {
     } catch (error) {
       console.error('Error sending ID token to server:', error);
     }
-  };*/
+  };
 
-  const handleSignIn = async () => {
+  /*const handleSignIn = async () => {
     const provider = new GoogleAuthProvider();
 
     try {
@@ -103,7 +103,7 @@ export default function Signup() {
       console.error("Error during Google Sign-In:", error);
       handleError(error);
     }
-  };
+  };*/
 
 
   return (
