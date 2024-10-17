@@ -12,15 +12,17 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Link, useNavigate } from "react-router-dom";
-import { useGoogleSignInMutation, useSignupMutation } from "@/redux/slices/api";
+import {  useSignupMutation } from "@/redux/slices/api";
 import { handleError } from "@/utils/handleError";
 import { updateCurrentUser, updateIsLoggedIn } from "@/redux/slices/appSlice";
 import { useDispatch } from "react-redux";
 
-import {  GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
-import { auth } from '@/utils/firebase';
+import {   signInWithPopup } from 'firebase/auth';
+import {  auth, googleProvider } from '@/utils/firebase';
 
 import { FcGoogle } from "react-icons/fc";
+
+
 
 const formSchema = z.object({
   username: z.string(),
@@ -55,23 +57,71 @@ export default function Signup() {
     }
   }
 
+  
+
 
   const handleSignIn = async () => {
-    console.log("In handle signin");
+    /*console.log("In handle signin");
 
     const provider = new GoogleAuthProvider();
 
     try {
       const result = await signInWithPopup(auth, provider);
       console.log(result.user); 
+
+      const newuser = {
+        username : result.user.displayName!,
+        email : result.user.email!,
+        password : result.user.displayName!
+      }
+
+      console.log("1")
+      const response = await signup(newuser).unwrap();
+      console.log("2")
+      dispatch(updateCurrentUser(response));
+      console.log("3")
+      dispatch(updateIsLoggedIn(true));
+      console.log("4")
+      navigate("/");
+      console.log("5")
+
       const idToken = await result.user.getIdToken();
       await sendIdTokenToServer(idToken);
     } catch (error) {
       console.error('Error during Google Sign-In:', error);
-    }
+    }*/
+      try {
+        const result = await signInWithPopup(auth, googleProvider);
+        console.log(result);
+        const token = await result.user.getIdToken();
+    
+        // Use 'displayName' for username and 'displayName' for password (as a placeholder)
+        const requestBody = {
+          username: result.user.displayName || "Default Username",
+          email: result.user.email,
+          password: result.user.displayName || "defaultpassword", // This can be replaced with a stronger placeholder if needed
+          picture: result.user.photoURL,
+        };
+        console.log("Request Payload:", requestBody);
+    
+        const response = await fetch("http://localhost:4000/api/protected", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: token,
+          },
+          body: JSON.stringify(requestBody),
+        });
+    
+        const userData = await response.json();
+        console.log("User Data:", userData);
+        
+      } catch (error) {
+        console.error("Error during sign-in:", error);
+      }
   };
 
-  const sendIdTokenToServer = async (idToken:string) => {
+  /*const sendIdTokenToServer = async (idToken:string) => {
     try {
       const response = await fetch('/api/auth/verify-token', {
         method: 'POST',
@@ -85,7 +135,7 @@ export default function Signup() {
     } catch (error) {
       console.error('Error sending ID token to server:', error);
     }
-  };
+  };*/
 
   /*const handleSignIn = async () => {
     const provider = new GoogleAuthProvider();
