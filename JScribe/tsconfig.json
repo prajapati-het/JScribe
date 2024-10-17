@@ -6,6 +6,10 @@
   ],
   "compilerOptions": {
     "baseUrl": ".",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
     "paths": {
       "@/*": ["./src/*"]
     }
