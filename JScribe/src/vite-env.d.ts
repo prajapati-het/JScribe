@@ -16,7 +16,7 @@ interface loginCredentialsType {
 interface signupCredentialsType {
     username: string
     email:string
-    password: string
+    password?: string
 }
 
 interface codeType {

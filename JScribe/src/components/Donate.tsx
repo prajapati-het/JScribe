@@ -2,16 +2,18 @@ import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { loadStripe } from '@stripe/stripe-js';
 import { Button } from './ui/button';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
 
 function AlertModal({ message, onClose }) {
     return (
         <div
             className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-            onClick={onClose} // Close when clicking on the backdrop
+            onClick={onClose}
         >
             <div
                 className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg w-80 relative"
-                onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside the content
+                onClick={(e) => e.stopPropagation()}
             >
                 <iframe
                     title="Alert Animation"
@@ -28,7 +30,11 @@ export default function Donate() {
     const [paymentStatus, setPaymentStatus] = useState('');
     const [amount, setAmount] = useState('');
     const [showAlert, setShowAlert] = useState(false);
+    const [alertMessage, setAlertMessage] = useState('');
     const location = useLocation();
+    const isLoggedIn = useSelector(
+        (state: RootState) => state.appSlice.isLoggedIn
+    );
 
     useEffect(() => {
         const params = new URLSearchParams(location.search);
@@ -45,8 +51,15 @@ export default function Donate() {
             console.error("Missing Stripe publishable key.");
             return;
         }
-    
+
+        if (!isLoggedIn) {
+            setAlertMessage('Please log in to make a donation.');
+            setShowAlert(true);
+            return;
+        }
+
         if (!amount || isNaN(Number(amount)) || !Number.isInteger(Number(amount)) || Number(amount) <= 0) {
+            setAlertMessage('Enter a valid amount');
             setShowAlert(true);
             return;
         }
@@ -104,7 +117,7 @@ export default function Donate() {
             )}
             {showAlert && (
                 <AlertModal
-                    message="Enter a valid amount"
+                    message={alertMessage}
                     onClose={() => setShowAlert(false)}
                 />
             )}

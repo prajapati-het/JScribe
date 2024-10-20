@@ -25,57 +25,55 @@ app.use("/user", UserAuthRouter);
 
 app.post("/api/protected", verifyTokengoogle, async (req, res) => {
   try {
-    console.log("Request body:", req.body);
+      console.log("Decoded Token:", req.body); // Contains decoded token
 
-    const username = req.body.name;
-    const email = req.body.email;
-    const password = req.body.name;
-    const picture = req.body.picture;
-    console.log("Extracted values - Username:", username, "Email:", email, "Password:", password, "Picture:", picture);
+      const { name: username, email, picture } = req.body; // Destructure the relevant fields from the token
 
-    if (!username || !password) {
-      return res.status(400).json({ message: "Username and password are required." });
-    }
+      if (!username) {
+          return res.status(400).json({ message: "Username is required." });
+      }
 
+      let user = await User.findOne({ email });
 
-    let user = await User.findOne({ email });
+      console.log(user)
 
-    if (!user) {
+      if (!user) {
+          user = new User({
+              username,
+              email,
+              picture,
+          });
 
-      user = new User({
-        username,
-        email,
-        password,
-        picture,
-      });
+          await user.save();
+      }
 
-      await user.save();
-    }
-
-    res.status(200).json(user);
+      res.status(200).json(user);
   } catch (error) {
-    console.error("Error during user validation:", error);
-    res.status(500).json({ message: "Internal server error" });
+      console.error("Error during user validation:", error);
+      res.status(500).json({ message: "Internal server error" });
   }
 });
 
 
-  async function verifyTokengoogle(req : Request, res: Response, next:NextFunction) {
-    const idToken = req.headers.authorization;
-  
-    if (!idToken) {
+
+async function verifyTokengoogle(req: Request, res: Response, next: NextFunction) {
+  const authHeader = req.headers.authorization;
+  const idToken = authHeader && authHeader.startsWith('Bearer ') ? authHeader.split(' ')[1] : null;
+
+  if (!idToken) {
       return res.status(401).send("Unauthorized");
-    }
-  
-    try {
+  }
+
+  try {
       const decodedToken = await admin.auth().verifyIdToken(idToken);
       req.body = decodedToken;
       next();
-    } catch (error) {
-        console.log(error)
+  } catch (error) {
+      console.error("Error verifying token:", error);
       return res.status(401).send("Unauthorized");
-    }
   }
+}
+
 
   app.post("/api/create-donate-session", async (req, res) => {
     try {

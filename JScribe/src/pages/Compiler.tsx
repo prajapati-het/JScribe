@@ -54,7 +54,7 @@ export default function Compiler() {
         direction={windowWidth > 768 ? "horizontal" : "vertical"}
         className="!h-[calc(100vh-60px)]"
       >
-        <ResizablePanel defaultSize={50} className="h-[500px]">
+        <ResizablePanel defaultSize={50} className="h-[calc(100dvh-60px)]">
           <HelperHeader />
           <CodeEditor />
         </ResizablePanel>

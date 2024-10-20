@@ -8,6 +8,7 @@ import { OAuth2Client } from "google-auth-library";
 const client = new OAuth2Client(process.env.CLIENT_ID);
 
 export const signup = async (req: Request, res: Response) => {
+  console.log(req.body);
   const { username, email, password } = req.body;
   const usernameRegex = /^[a-zA-Z0-9]+$/;
   try {

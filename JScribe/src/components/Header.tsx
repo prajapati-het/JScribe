@@ -11,6 +11,8 @@ import { useEffect, useState } from "react";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { setCurrentWidth, updateCurrentUser, updateIsLoggedIn } from "@/redux/slices/appslice";
+import { signOut } from "firebase/auth";
+import { auth } from "@/utils/firebase";
 
 export default function Header() {
   const [logout, { isLoading }] = useLogoutMutation();
@@ -40,6 +42,7 @@ export default function Header() {
 
   async function handleLogout() {
     try {
+      await signOut(auth);
       await logout().unwrap();
       dispatch(updateIsLoggedIn(false));
       dispatch(updateCurrentUser({}));

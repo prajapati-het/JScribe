@@ -61,100 +61,52 @@ export default function Signup() {
 
 
   const handleSignIn = async () => {
-    /*console.log("In handle signin");
-
-    const provider = new GoogleAuthProvider();
-
     try {
-      const result = await signInWithPopup(auth, provider);
-      console.log(result.user); 
-
-      const newuser = {
-        username : result.user.displayName!,
-        email : result.user.email!,
-        password : result.user.displayName!
-      }
-
-      console.log("1")
-      const response = await signup(newuser).unwrap();
-      console.log("2")
-      dispatch(updateCurrentUser(response));
-      console.log("3")
-      dispatch(updateIsLoggedIn(true));
-      console.log("4")
-      navigate("/");
-      console.log("5")
-
-      const idToken = await result.user.getIdToken();
-      await sendIdTokenToServer(idToken);
-    } catch (error) {
-      console.error('Error during Google Sign-In:', error);
-    }*/
-      try {
-        const result = await signInWithPopup(auth, googleProvider);
-        console.log(result);
-        const token = await result.user.getIdToken();
-    
-        // Use 'displayName' for username and 'displayName' for password (as a placeholder)
-        const requestBody = {
-          username: result.user.displayName || "Default Username",
-          email: result.user.email,
-          password: result.user.displayName || "defaultpassword", // This can be replaced with a stronger placeholder if needed
-          picture: result.user.photoURL,
-        };
-        console.log("Request Payload:", requestBody);
-    
-        const response = await fetch("http://localhost:4000/api/protected", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: token,
-          },
-          body: JSON.stringify(requestBody),
-        });
-    
-        const userData = await response.json();
-        console.log("User Data:", userData);
-        
-      } catch (error) {
-        console.error("Error during sign-in:", error);
-      }
-  };
-
-  /*const sendIdTokenToServer = async (idToken:string) => {
-    try {
-      const response = await fetch('/api/auth/verify-token', {
-        method: 'POST',
+      const result = await signInWithPopup(auth, googleProvider);
+  
+      const firebaseUser = result.user;
+      const token = await firebaseUser.getIdToken();
+  
+      const requestBody = {
+        username: firebaseUser.displayName || "Default Username",
+        email: firebaseUser.email,
+        uid: firebaseUser.uid,
+        picture: firebaseUser.photoURL,
+      };
+  
+      const response = await fetch("http://localhost:4000/api/protected", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ idToken }),
+        body: JSON.stringify(requestBody),
       });
-      const data = await response.json();
-      console.log('Server response:', data);
-    } catch (error) {
-      console.error('Error sending ID token to server:', error);
-    }
-  };*/
 
-  /*const handleSignIn = async () => {
-    const provider = new GoogleAuthProvider();
+      console.log(response.json());
+  
+      const userData = await response.json();
 
-    try {
-      const result = await signInWithPopup(auth, provider);
-      const idToken = await result.user.getIdToken();
+      const values = {
+        username: userData.username as string,
+        email: userData.email as string,
+        password: userData.password as string
+      }
+      
 
-      // Use the googleSignIn mutation
-      const response = await googleSignIn({ idToken }).unwrap();
-      dispatch(updateCurrentUser(response));
+      const user_response = await signup(values).unwrap();
+  
+      dispatch(updateCurrentUser(user_response));
       dispatch(updateIsLoggedIn(true));
       navigate("/");
+  
+      console.log("User Data:", userData);
     } catch (error) {
-      console.error("Error during Google Sign-In:", error);
+      console.error("Error during sign-in:", error);
       handleError(error);
     }
-  };*/
-
+  };
+  
 
   return (
     <div className="__signup grid-bg w-full h-[calc(100dvh-60px)] flex justify-center items-center flex-col ">
