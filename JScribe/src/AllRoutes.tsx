@@ -1,6 +1,7 @@
 import { Suspense, lazy } from "react";
 import { Route, Routes } from "react-router-dom";
 import Loader from "./components/Loader/Loader";
+import Donate from "./components/Donate";
 
 const Home = lazy(() => import("./pages/Home"));
 const Login = lazy(() => import("./pages/Login"));
@@ -26,6 +27,9 @@ export default function AllRoutes() {
         <Route path="/all-codes" element={<AllCodes />} />
         <Route path="/my-codes" element={<MyCodes />} />
         <Route path="/compiler/:urlId?" element={<Compiler />} />
+        <Route path="/donate" element={<Donate/>} />
+        <Route path="/success" element={<Donate/>} />
+        <Route path="/cancel" element={<Donate/>} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Suspense>

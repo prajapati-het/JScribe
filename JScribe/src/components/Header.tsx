@@ -59,6 +59,11 @@ export default function Header() {
       </Link>
       {windowWidth > 500 ? (
         <ul className="flex gap-2">
+        <li>
+            <Link to="/donate">
+              <Button variant="outline">Donate 🙏 </Button>
+            </Link>
+          </li>
           <li>
             <Link to="/compiler">
               <Button variant="link">Compiler</Button>

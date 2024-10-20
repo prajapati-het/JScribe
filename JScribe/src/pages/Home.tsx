@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import './pageStyles/Home.css'; // Make sure to create a CSS file for styles
+import './pageStyles/Home.css';
 
 export default function Home() {
-  const letters = "JScribe".split(""); // Split the text into an array of letters
+  const letters = "JScribe".split("");
   const [glow, setGlow] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      setGlow(true); // Trigger glow after letters accumulate
-    }, 1500); // Adjust this to match the duration of the letter animations
+      setGlow(true);
+    }, 1500);
 
-    return () => clearTimeout(timer); // Cleanup timer on unmount
+    return () => clearTimeout(timer); 
   }, []);
 
   return (
@@ -21,7 +21,7 @@ export default function Home() {
             key={index}
             className={`letter ${glow ? 'glow' : ''}`}
             style={{
-              animationDelay: `${index * 100}ms`, // Stagger the animation for each letter
+              animationDelay: `${index * 100}ms`,
             }}
           >
             {letter}

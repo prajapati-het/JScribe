@@ -47,26 +47,25 @@ export default function Compiler() {
         <Loader />
       </div>
     );
+
   return (
-    <ResizablePanelGroup
-      direction={windowWidth > 768 ? "horizontal" : "vertical"}
-      className="!h-[calc(100vh-60px)]"
-    >
-      <ResizablePanel
-        // className="h-[calc(100dvh-60px)] min-w-[350px]"
-        defaultSize={50}
-        className="h-[500px]"
+    <div className="relative">
+      <ResizablePanelGroup
+        direction={windowWidth > 768 ? "horizontal" : "vertical"}
+        className="!h-[calc(100vh-60px)]"
       >
-        <HelperHeader />
-        <CodeEditor />
-      </ResizablePanel>
-      <ResizableHandle />
-      <ResizablePanel
-        className="h-[calc(100dvh-60px)] min-w-[350px]"
-        defaultSize={50}
-      >
-        <RenderCode />
-      </ResizablePanel>
-    </ResizablePanelGroup>
+        <ResizablePanel defaultSize={50} className="h-[500px]">
+          <HelperHeader />
+          <CodeEditor />
+        </ResizablePanel>
+        <ResizableHandle />
+        <ResizablePanel
+          className="h-[calc(100dvh-60px)] min-w-[350px]"
+          defaultSize={50}
+        >
+          <RenderCode />
+        </ResizablePanel>
+      </ResizablePanelGroup>
+    </div>
   );
 }
